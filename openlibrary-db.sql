@@ -10,7 +10,6 @@ set client_encoding = 'UTF8';
 -- -- create tables
 \i 'db_scripts/tbl_authors.sql';
 \i 'db_scripts/tbl_works.sql';
-\i 'db_scripts/tbl_author_works.sql';
 \i 'db_scripts/tbl_editions.sql';
 \i 'db_scripts/tbl_edition_isbns.sql';
 

@@ -17,25 +17,6 @@ select now();
 \i 'db_scripts/tbl_works_indexes.sql';
 
 select now();
--- set author and work_key for author_works from the data embedded in works
-alter table author_works set unlogged;
-insert into author_works (author_key, work_key)
-select distinct author_key, work_key
-from (
-  select
-    jsonb_array_elements(data->'authors')->'author'->>'key' as author_key,
-    key as work_key
-  from works
-  where key is not null
-  and data->'authors'->0->'author' is not null) authorship
-where author_key is not null
-and work_key is not null;
-alter table author_works set logged;
-
-select now();
-\i 'db_scripts/tbl_author_works_indexes.sql';
-
-select now();
 -- import editions csv
 alter table editions set unlogged;
 select now();
