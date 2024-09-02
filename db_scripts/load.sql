@@ -64,8 +64,37 @@ from (
 where length(isbn) = 13 or length(isbn) = 10;
 alter table edition_isbns set logged;
 
-
 select now();
 -- create isbn indexes
 \i 'db_scripts/tbl_edition_isbns_indexes.sql';
+select now();
+
+select now();
+alter table searchable_texts set unlogged;
+insert into searchable_texts (
+  work_key
+  , title
+  , author_key
+  , author_name
+)
+select
+  w.work_key
+  , w.title
+  , w.author_key
+  , a.data->>'name' as author_name
+from (
+    select
+      key as work_key
+      , jsonb_extract_path_text(data, 'title') as title
+      , jsonb_array_elements(data->'authors')->'author'->>'key' as author_key
+    from works) w
+  , authors a
+where w.author_key = a.key
+  and w.title is not null
+;
+alter table searchable_texts set logged;
+
+select now();
+-- create searchable_texts indexes
+\i 'db_scripts/tbl_searchable_texts_indexes.sql';
 select now();

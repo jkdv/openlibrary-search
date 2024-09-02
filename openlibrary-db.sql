@@ -12,6 +12,7 @@ set client_encoding = 'UTF8';
 \i 'db_scripts/tbl_works.sql';
 \i 'db_scripts/tbl_editions.sql';
 \i 'db_scripts/tbl_edition_isbns.sql';
+\i 'db_scripts/tbl_searchable_texts.sql';
 
 -- create filenames that can be accessed in lieu of parameters
 \i 'db_scripts/tbl_fileinfo.sql';
