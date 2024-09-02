@@ -11,3 +11,4 @@ create_db.bat
 copy_commands.sql
 
 .vscode/settings.json
+.idea

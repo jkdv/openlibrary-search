@@ -60,7 +60,8 @@ from (
     jsonb_array_elements_text(data->'isbn') as isbn
   from editions
   where jsonb_array_length(data->'isbn') > 0
-  and key is not null) isbns;
+  and key is not null) isbns
+where length(isbn) = 13 or length(isbn) = 10;
 alter table edition_isbns set logged;
 
 
