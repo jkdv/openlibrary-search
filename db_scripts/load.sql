@@ -72,25 +72,50 @@ select now();
 select now();
 alter table searchable_texts set unlogged;
 insert into searchable_texts (
-  work_key
-  , title
-  , author_key
-  , author_name
+  work_key,
+  title,
+  author1_key,
+  author2_key,
+  author3_key,
+  author4_key,
+  author1_name,
+  author2_name,
+  author3_name,
+  author4_name,
+  author_count,
+  cover
 )
 select
   w.work_key
   , w.title
-  , w.author_key
-  , a.data->>'name' as author_name
+  , w.author1_key
+  , w.author2_key
+  , w.author3_key
+  , w.author4_key
+  , a1.data->>'name' as author1_name
+  , a2.data->>'name' as author2_name
+  , a3.data->>'name' as author3_name
+  , a4.data->>'name' as author4_name
+  , w.author_count
+  , cover
 from (
     select
       key as work_key
       , jsonb_extract_path_text(data, 'title') as title
-      , jsonb_array_elements(data->'authors')->'author'->>'key' as author_key
+      --, jsonb_array_elements(data->'authors')->'author'->>'key' as author_key
+      , data->'authors'->0->'author'->>'key' as author1_key
+      , data->'authors'->1->'author'->>'key' as author2_key
+      , data->'authors'->2->'author'->>'key' as author3_key
+      , data->'authors'->3->'author'->>'key' as author4_key
+      , coalesce(jsonb_array_length(data->'authors'), 0) as author_count
+      , data->'covers'->>-1 as cover
     from works) w
-  , authors a
-where w.author_key = a.key
-  and w.title is not null
+left join authors a1 on w.author1_key = a1.key
+left join authors a2 on w.author2_key = a2.key
+left join authors a3 on w.author3_key = a3.key
+left join authors a4 on w.author4_key = a4.key
+where w.title is not null
+  and a1.data->>'name' is not null
 ;
 alter table searchable_texts set logged;
 
